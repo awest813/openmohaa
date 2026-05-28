@@ -219,30 +219,38 @@ async function launchEngine() {
         return;
     }
 
+    // Pre-load all assets from IndexedDB before creating the module
+    setStatus("Reading assets from IndexedDB …");
+    const db   = await openDB();
+    const keys = await dbKeys(db);
+    /** @type {Map<string, Uint8Array>} */
+    const assetBuffers = new Map();
+    for (const key of keys) {
+        const data = await dbGet(db, key);
+        if (data) {
+            assetBuffers.set(key, new Uint8Array(data));
+        }
+    }
+    db.close();
+    setStatus(`Loaded ${assetBuffers.size} asset(s). Starting engine …`);
+
     // Prepare Emscripten Module overrides
     const moduleOverrides = {
         canvas: canvas,
         print:  (text) => appendOutput(text),
         printErr: (text) => appendOutput(`[err] ${text}`),
-        // Create the persistent mount point before main() runs
+        // preRun is synchronous: write pre-loaded buffers into the virtual FS
         preRun: [
-            async function(Module) {
+            function(Module) {
                 // Create directories
                 for (const dir of Object.values(config.gameDirectories)) {
                     Module.FS.mkdirTree(dir);
                 }
 
-                // Copy assets from IndexedDB into the virtual FS
-                const db   = await openDB();
-                const keys = await dbKeys(db);
-                for (const key of keys) {
-                    const data = await dbGet(db, key);
-                    if (data) {
-                        Module.FS.writeFile(key, new Uint8Array(data));
-                    }
+                // Write pre-loaded assets into the virtual FS
+                for (const [path, data] of assetBuffers) {
+                    Module.FS.writeFile(path, data);
                 }
-                db.close();
-                setStatus("Assets loaded into virtual FS.");
             }
         ],
         arguments: config.engineArgs,
