@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenMoHAA — Web</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Launcher overlay: shown before the engine starts -->
+    <div id="launcher">
+        <div class="launcher-inner">
+            <h1>OpenMoHAA</h1>
+            <p class="subtitle">Medal of Honor: Allied Assault — Web Port</p>
+
+            <section id="asset-section">
+                <h2>Import Game Assets</h2>
+                <p>
+                    You need legal copies of the MOHAA <code>.pk3</code> files (and any
+                    expansion packs) to play. Select the files below; they will be
+                    persisted locally in your browser via IndexedDB.
+                </p>
+
+                <div id="drop-zone">
+                    <p>Drag &amp; drop <code>.pk3</code> files here, or click to browse</p>
+                    <input type="file" id="file-input" multiple accept=".pk3,.PK3" hidden>
+                </div>
+
+                <div id="file-list"></div>
+
+                <details>
+                    <summary>Which files do I need?</summary>
+                    <ul>
+                        <li><strong>Allied Assault</strong> — files from <code>main/</code>
+                            (e.g.&nbsp;<code>pak0.pk3</code> … <code>pak5.pk3</code>)</li>
+                        <li><strong>Spearhead</strong> — files from <code>mainta/</code></li>
+                        <li><strong>Breakthrough</strong> — files from <code>maintt/</code></li>
+                    </ul>
+                </details>
+            </section>
+
+            <section id="controls-section">
+                <button id="btn-start" disabled>Start OpenMoHAA</button>
+                <button id="btn-clear-assets" class="secondary">Clear Stored Assets</button>
+            </section>
+
+            <div id="status-bar">Ready</div>
+        </div>
+    </div>
+
+    <!-- Game canvas: becomes visible after launch -->
+    <canvas id="canvas" tabindex="-1" style="display:none;"></canvas>
+
+    <!-- Emscripten console / status -->
+    <div id="output-container" style="display:none;">
+        <textarea id="output" rows="8" readonly></textarea>
+    </div>
+
+    <script type="module" src="openmohaa-loader.js"></script>
+    <!-- Emscripten-generated JS (ES6 module) will be loaded by the loader -->
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+    "gameDirectories": {
+        "main": "/persistent/openmohaa/main",
+        "mainta": "/persistent/openmohaa/mainta",
+        "maintt": "/persistent/openmohaa/maintt"
+    },
+    "persistRoot": "/persistent",
+    "engineArgs": [
+        "+set", "fs_basepath", "/persistent/openmohaa",
+        "+set", "fs_homepath", "/persistent/openmohaa",
+        "+set", "com_maxfps", "0",
+        "+set", "r_mode", "-1",
+        "+set", "r_customwidth", "1280",
+        "+set", "r_customheight", "720"
+    ]
+}
